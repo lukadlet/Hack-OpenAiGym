@@ -28,6 +28,9 @@ def filter_buttons(buttons):
         tf.summary.tensor_summary("buttons",buttons)
     return buttons
 
+def loss(info):
+    return info.screen_max_x - info.screen_x
+
 def setup_tensor_graph():
     # Create a placeholder to put the screen buffer
     with tf.name_scope("inputs"):
@@ -39,8 +42,8 @@ def setup_tensor_graph():
 
     # Actual AI
     with tf.name_scope("AI"):
-        weights = tf.Variable(tf.random_uniform([64 * 64, 12]), name = "Weights")
-        biases = tf.Variable(tf.random_uniform([12,]), name = "Biases")
+        weights = tf.Variable(tf.random_normal([64 * 64, 12]), name = "Weights")
+        biases = tf.Variable(tf.random_normal([12,]), name = "Biases")
         output = tf.matmul(screen_flattened, weights) + biases
 
     # Turn output into button presses
@@ -49,7 +52,6 @@ def setup_tensor_graph():
     # Write everything down    
     writer = tf.summary.FileWriter('./logs/dev/', tf.get_default_graph())
     return screen_buffer, buttons, writer
-
 
 def capture_screenbuffer(writer, summary, step, capture_each = 30):
     if(step % capture_each == 0):
@@ -61,7 +63,7 @@ def main():
     env = make(game='SonicTheHedgehog-Genesis', state = 'LabyrinthZone.Act1')
     obs = env.reset()
 
-    button_pressses = [12,]
+    button_presses = [12,]
     done = False
 
     summary = tf.summary.merge_all()
@@ -70,13 +72,14 @@ def main():
         sess.run(tf.global_variables_initializer())
         step = 0
         while not done:
-            obs, rew, done, info = env.step(button_pressses)
+            print(button_presses)
+            obs, rew, done, info = env.step(button_presses)
             
             feed_dict = {
                 screen_buffer : obs
             }
 
-            summary_str, button_pressses = sess.run([summary, output], feed_dict)
+            summary_str, button_presses = sess.run([summary, output], feed_dict)
             
             step = capture_screenbuffer(writer, summary_str, step)
 
