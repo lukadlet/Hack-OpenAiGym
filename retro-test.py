@@ -7,29 +7,38 @@ def test_tensorflow():
     sess = tf.Session()
     print(sess.run(hello))
 
+def filter_screen(image, downsample_x, downsample_y):
+    with tf.name_scope("filter"):
+        tf.summary.image('original', image)
+        
+        image = tf.image.rgb_to_grayscale(image)
+        tf.summary.image('greyscale', image)
+
+        image = tf.image.resize_bicubic(image, [downsample_x, downsample_y]) 
+        tf.summary.image('downscaled', image)
+
+        image = tf.reshape(image, [-1, downsample_x * downsample_y])
+    
+    return image
+
 def setup_tensor_graph():
 
     # Create a placeholder to put the screen buffer
     screen_buffer = tf.placeholder(tf.float32, name="ScreenBuffer")
     screen_image = tf.reshape(screen_buffer, [-1, 224, 320, 3])
-    tf.summary.image('replay', screen_image )
 
     # Greyscale and resize the screen so its a computable size
-    screen_filtered = tf.image.rgb_to_grayscale(screen_image)
-    screen_filtered = tf.image.resize_bicubic(screen_filtered, [64,64])
-    tf.summary.image('filtered', screen_filtered)
-
-    screen_filtered = tf.reshape(screen_filtered, [-1, 64 * 64])
+    screen_flattened = filter_screen(screen_image, 64, 64)
 
     # AI uses these things somewhere, right?
     weights = tf.Variable(tf.random_uniform([64 * 64, 12]), name = "Weights")
-    biases = tf.Variable(tf.random_uniform([12]), name = "Biases")
+    biases = tf.Variable(tf.random_uniform([12,]), name = "Biases")
 
     # Uhh, just hit random buttons I guess
-    noise =  tf.random_uniform([12])
-    # noise = tf.transpose(tf.matmul(screen_filtered, weights))
+    noise =  tf.random_uniform([12,])
 
-    output = tf.cast(tf.round(noise), tf.int32)
+    output = tf.matmul(screen_flattened, weights)
+    output = tf.reshape(tf.cast(tf.round(output), tf.bool), shape=[-1,])
 
     # Write everything down    
     writer = tf.summary.FileWriter('./logs/dev/', tf.get_default_graph())
@@ -55,6 +64,7 @@ def main():
         sess.run(tf.global_variables_initializer())
         step = 0
         while not done:
+            print(button_pressses)
             obs, rew, done, info = env.step(button_pressses)
             
             feed_dict = {
