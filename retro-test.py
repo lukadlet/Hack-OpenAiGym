@@ -8,7 +8,7 @@ def test_tensorflow():
     print(sess.run(hello))
 
 def filter_screen(image, downsample_x, downsample_y):
-    with tf.name_scope("filter"):
+    with tf.name_scope("filter_screen"):
         tf.summary.image('original', image)
         
         image = tf.image.rgb_to_grayscale(image)
@@ -18,31 +18,37 @@ def filter_screen(image, downsample_x, downsample_y):
         tf.summary.image('downscaled', image)
 
         image = tf.reshape(image, [-1, downsample_x * downsample_y])
-    
     return image
 
-def setup_tensor_graph():
+def filter_buttons(buttons):
+    with tf.name_scope("filter_buttons"):
+        buttons = tf.round(buttons)
+        buttons = tf.cast(buttons, tf.bool)
+        buttons = tf.reshape(buttons, shape=[-1,]) # Flatten to 1D array
+        tf.summary.tensor_summary("buttons",buttons)
+    return buttons
 
+def setup_tensor_graph():
     # Create a placeholder to put the screen buffer
-    screen_buffer = tf.placeholder(tf.float32, name="ScreenBuffer")
-    screen_image = tf.reshape(screen_buffer, [-1, 224, 320, 3])
+    with tf.name_scope("inputs"):
+        screen_buffer = tf.placeholder(tf.float32, name="ScreenBuffer")
+        screen_image = tf.reshape(screen_buffer, [-1, 224, 320, 3])
 
     # Greyscale and resize the screen so its a computable size
     screen_flattened = filter_screen(screen_image, 64, 64)
 
-    # AI uses these things somewhere, right?
-    weights = tf.Variable(tf.random_uniform([64 * 64, 12]), name = "Weights")
-    biases = tf.Variable(tf.random_uniform([12,]), name = "Biases")
+    # Actual AI
+    with tf.name_scope("AI"):
+        weights = tf.Variable(tf.random_uniform([64 * 64, 12]), name = "Weights")
+        biases = tf.Variable(tf.random_uniform([12,]), name = "Biases")
+        output = tf.matmul(screen_flattened, weights) + biases
 
-    # Uhh, just hit random buttons I guess
-    noise =  tf.random_uniform([12,])
-
-    output = tf.matmul(screen_flattened, weights)
-    output = tf.reshape(tf.cast(tf.round(output), tf.bool), shape=[-1,])
+    # Turn output into button presses
+    buttons = filter_buttons(output)
 
     # Write everything down    
     writer = tf.summary.FileWriter('./logs/dev/', tf.get_default_graph())
-    return screen_buffer, output, writer
+    return screen_buffer, buttons, writer
 
 
 def capture_screenbuffer(writer, summary, step, capture_each = 30):
@@ -64,7 +70,6 @@ def main():
         sess.run(tf.global_variables_initializer())
         step = 0
         while not done:
-            print(button_pressses)
             obs, rew, done, info = env.step(button_pressses)
             
             feed_dict = {
