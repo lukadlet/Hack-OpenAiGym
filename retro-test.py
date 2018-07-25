@@ -21,12 +21,44 @@ def filter_screen(image, downsample_x, downsample_y):
     return image
 
 def filter_buttons(buttons):
+
     with tf.name_scope("filter_buttons"):
         buttons = tf.round(buttons)
-        buttons = tf.cast(buttons, tf.bool)
         buttons = tf.reshape(buttons, shape=[-1,]) # Flatten to 1D array
-        tf.summary.tensor_summary("buttons",buttons)
+
+        tf.summary.tensor_summary("buttons", buttons)
     return buttons
+
+def find_closest(buttons):
+    # All necessary actions
+    #"B", "A", "MODE", "START", "UP", "DOWN", "LEFT", "RIGHT", "C", "Y", "X", "Z"
+    actions = [
+        [False, False, False, False, False, False, False, True, False, False, False, False],
+        [False, False, False, False, False, False, True, False, False, False, False, False],
+        [False, False, False, False, False, True, True, False, False, False, False, False],
+        [False, False, False, False, False, True, False, True, False, False, False, False],
+        [False, False, False, False, False, True, False, False, False, False, False, False],
+        [True, False, False, False, False, True, False, False, False, False, False, False],
+        [True, False, False, False, False, False, False, False, False, False, False, False]
+    ]
+
+    # Find closest action
+    closestIndex = 0
+    minDiff = 100000000000
+    for actionIndex in range(6):
+        difference = 0.0
+        actionFloat = np.array(actions[actionIndex]).astype(float)
+
+        for buttonIndex in range(11):
+            difference = difference + abs(actionFloat[buttonIndex] - buttons[buttonIndex])
+
+        if (difference < minDiff):
+            minDiff = difference
+            closestIndex = actionIndex
+            print(minDiff)
+            print(closestIndex)
+
+    return actions[closestIndex]
 
 def loss(info):
     return info.screen_max_x - info.screen_x
@@ -59,7 +91,7 @@ def capture_screenbuffer(writer, summary, step, capture_each = 30):
     return step + 1
 
 def main():
-    screen_buffer, output, writer = setup_tensor_graph()
+    screen_buffer, buttons, writer = setup_tensor_graph()
     env = make(game='SonicTheHedgehog-Genesis', state = 'LabyrinthZone.Act1')
     obs = env.reset()
 
@@ -72,15 +104,14 @@ def main():
         sess.run(tf.global_variables_initializer())
         step = 0
         while not done:
-            print(button_presses)
             obs, rew, done, info = env.step(button_presses)
             
             feed_dict = {
                 screen_buffer : obs
             }
 
-            summary_str, button_presses = sess.run([summary, output], feed_dict)
-            
+            summary_str, button_presses = sess.run([summary, buttons], feed_dict)
+            button_presses = find_closest(button_presses)
             step = capture_screenbuffer(writer, summary_str, step)
 
             # Train network here
