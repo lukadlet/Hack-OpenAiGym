@@ -28,8 +28,21 @@ def filter_buttons(buttons):
         tf.summary.tensor_summary("buttons",buttons)
     return buttons
 
+def estimate_loss(output):
+    with tf.name_scope("loss_estimator"):
+        weights = tf.Variable(tf.random_normal([12, 99]), name="Weights")
+        biases = tf.Variable(tf.random_normal([99]),name="Biases" )
+        loss_estimator = tf.matmul(output, weights) + biases
+
+    return loss_estimator;
+
 def compute_loss(info):
-    return info["screen_x_end"] - info["screen_x"]
+    return info["screen_x_end"] - info["x"]
+
+def compute_error(estimated_loss, actual_loss):
+    with tf.name_scope("error"):
+        error = tf.nn.softmax_cross_entropy_with_logits(labels = actual_loss, logits = estimated_loss)
+    return error
 
 def setup_tensor_graph():
     # Create a placeholder to put the screen buffer
@@ -50,12 +63,16 @@ def setup_tensor_graph():
     # noise = tf.random_normal([12,])
     buttons = filter_buttons(output)
 
-    loss = tf.placeholder(tf.float32, name="loss")
+    loss = estimate_loss(output)
     tf.losses.add_loss(loss)
+
+    actual_loss = tf.placeholder(tf.float32, name="ActualLoss")
+    error = compute_error(loss, actual_loss)
 
     # Write everything down    
     writer = tf.summary.FileWriter('./logs/dev/', tf.get_default_graph())
-    return screen_buffer, buttons, loss, writer
+    return screen_buffer, buttons, output, actual_loss, error, writer
+
 
 def capture_screenbuffer(writer, summary, step, capture_each = 30):
     if(step % capture_each == 0):
@@ -63,7 +80,7 @@ def capture_screenbuffer(writer, summary, step, capture_each = 30):
     return step + 1
 
 def main():
-    screen_buffer, buttons, loss_tensor, writer = setup_tensor_graph()
+    screen_buffer, buttons, output, actual_loss, error, writer = setup_tensor_graph()
     env = make(game='SonicTheHedgehog-Genesis', state = 'LabyrinthZone.Act1')
     obs = env.reset()
 
@@ -77,19 +94,22 @@ def main():
         sess.run(tf.global_variables_initializer())
         step = 0
         while not done:
-            button_presses = [0,0,0,0,0,0,0,1,0,0,0,0,]
             obs, rew, done, info = env.step(button_presses)
             
             feed_dict = {
-                screen_buffer : obs
+                screen_buffer : obs,
+                actual_loss : compute_loss(info)
             }
 
-            summary_str, button_presses = sess.run([summary, buttons], feed_dict)
+            # button_presses = list(b > onweights[i] for i,b in enumerate(buttonweights))
+
+            summary_str, output_values, button_presses = sess.run([summary, output, buttons], feed_dict)
+            print( output_values)
             
             step = capture_screenbuffer(writer, summary_str, step)
 
             # Train network here
-            # optimizer.minimize(loss_tensor)
+            optimizer.minimize(error)
             env.render()
 
         obs = env.reset()
