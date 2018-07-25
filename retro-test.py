@@ -23,14 +23,31 @@ def filter_screen(image, downsample_x, downsample_y):
 def filter_buttons(buttons):
     with tf.name_scope("filter_buttons"):
         buttons = tf.round(buttons)
-        buttons = tf.cast(buttons, tf.bool)
         buttons = tf.reshape(buttons, shape=[-1,]) # Flatten to 1D array
         tf.summary.tensor_summary("buttons",buttons)
     return buttons
 
+def choose_actions(buttons):
+    # All necessary actions
+    #"B", "A", "MODE", "START", "UP", "DOWN", "LEFT", "RIGHT", "C", "Y", "X", "Z"
+    actions = [
+        [False, False, False, False, False, False, False, True, False, False, False, False],
+        [False, False, False, False, False, False, True, False, False, False, False, False],
+        [False, False, False, False, False, True, True, False, False, False, False, False],
+        [False, False, False, False, False, True, False, True, False, False, False, False],
+        [False, False, False, False, False, True, False, False, False, False, False, False],
+        [True, False, False, False, False, True, False, False, False, False, False, False],
+        [True, False, False, False, False, False, False, False, False, False, False, False],
+        [False, False, False,False, False, False, False, False, False, False, False, False]
+    ]
+
+    index = np.argmax(buttons)
+    return actions[index]
+
+
 def estimate_loss(output):
     with tf.name_scope("loss_estimator"):
-        weights = tf.Variable(tf.random_normal([12, 99]), name="Weights")
+        weights = tf.Variable(tf.random_normal([8, 99]), name="Weights")
         biases = tf.Variable(tf.random_normal([99]),name="Biases" )
         loss_estimator = tf.matmul(output, weights) + biases
 
@@ -55,9 +72,10 @@ def setup_tensor_graph():
 
     # Actual AI
     with tf.name_scope("AI"):
-        weights = tf.Variable(tf.random_normal([64 * 64, 12]), name = "Weights")
-        biases = tf.Variable(tf.random_normal([12,]), name = "Biases")
+        weights = tf.Variable(tf.random_normal([64 * 64, 8]), name = "Weights")
+        biases = tf.Variable(tf.random_normal([8,]), name = "Biases")
         output = tf.matmul(screen_flattened, weights) + biases
+        output = tf.nn.l2_normalize(output)
 
     # Turn output into button presses
     # noise = tf.random_normal([12,])
@@ -71,7 +89,7 @@ def setup_tensor_graph():
 
     # Write everything down    
     writer = tf.summary.FileWriter('./logs/dev/', tf.get_default_graph())
-    return screen_buffer, buttons, output, actual_loss, error, writer
+    return screen_buffer, output, actual_loss, error, writer
 
 
 def capture_screenbuffer(writer, summary, step, capture_each = 30):
@@ -80,7 +98,7 @@ def capture_screenbuffer(writer, summary, step, capture_each = 30):
     return step + 1
 
 def main():
-    screen_buffer, buttons, output, actual_loss, error, writer = setup_tensor_graph()
+    screen_buffer, output, actual_loss, error, writer = setup_tensor_graph()
     env = make(game='SonicTheHedgehog-Genesis', state = 'LabyrinthZone.Act1')
     obs = env.reset()
 
@@ -101,10 +119,10 @@ def main():
                 actual_loss : compute_loss(info)
             }
 
-            # button_presses = list(b > onweights[i] for i,b in enumerate(buttonweights))
+            summary_str, output_values = sess.run([summary, output], feed_dict)
 
-            summary_str, output_values, button_presses = sess.run([summary, output, buttons], feed_dict)
-            print( output_values)
+            print( output_values[0] )
+            button_presses = choose_actions(output_values[0])
             
             step = capture_screenbuffer(writer, summary_str, step)
 
