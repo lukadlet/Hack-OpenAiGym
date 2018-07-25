@@ -99,7 +99,7 @@ def capture_screenbuffer(writer, summary, step, capture_each = 30):
 
 def main():
     screen_buffer, output, actual_loss, error, writer = setup_tensor_graph()
-    env = make(game='SonicTheHedgehog-Genesis', state = 'LabyrinthZone.Act1')
+    env = make(game='SonicTheHedgehog-Genesis', state = 'GreenHillZone.Act1', record='.')
     obs = env.reset()
 
     button_presses = [0,0,0,0,0,0,0,1,0,0,0,0,]
@@ -108,28 +108,34 @@ def main():
     summary = tf.summary.merge_all()
     optimizer = tf.train.GradientDescentOptimizer(0.5)
 
-    with tf.Session() as sess:
-        sess.run(tf.global_variables_initializer())
-        step = 0
-        while not done:
-            obs, rew, done, info = env.step(button_presses)
-            
-            feed_dict = {
-                screen_buffer : obs,
-                actual_loss : compute_loss(info)
-            }
+    saver = tf.train.Saver()
 
-            summary_str, output_values = sess.run([summary, output], feed_dict)
+    while True:
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            saver.restore(sess, 'models/model.checkpoint')
+            step = 0
+            while not done:
+                obs, rew, done, info = env.step(button_presses)
+                
+                feed_dict = {
+                    screen_buffer : obs,
+                    actual_loss : compute_loss(info)
+                }
 
-            print( output_values[0] )
-            button_presses = choose_actions(output_values[0])
-            
-            step = capture_screenbuffer(writer, summary_str, step)
+                summary_str, output_values = sess.run([summary, output], feed_dict)
 
-            # Train network here
-            optimizer.minimize(error)
-            env.render()
+                button_presses = choose_actions(output_values[0])
+                
+                step = capture_screenbuffer(writer, summary_str, step)
+                if(step % 60 == 0):
+                    saver.save(sess, 'models/model.checkpoint');
+                    print("checkpoint!")
 
+                # Train network here
+                optimizer.minimize(error)
+
+                env.render()
         obs = env.reset()
 
 if __name__ == '__main__':
