@@ -28,8 +28,8 @@ def filter_buttons(buttons):
         tf.summary.tensor_summary("buttons",buttons)
     return buttons
 
-def loss(info):
-    return info.screen_max_x - info.screen_x
+def compute_loss(info):
+    return info["screen_x_end"] - info["screen_x"]
 
 def setup_tensor_graph():
     # Create a placeholder to put the screen buffer
@@ -47,11 +47,15 @@ def setup_tensor_graph():
         output = tf.matmul(screen_flattened, weights) + biases
 
     # Turn output into button presses
+    # noise = tf.random_normal([12,])
     buttons = filter_buttons(output)
+
+    loss = tf.placeholder(tf.float32, name="loss")
+    tf.losses.add_loss(loss)
 
     # Write everything down    
     writer = tf.summary.FileWriter('./logs/dev/', tf.get_default_graph())
-    return screen_buffer, buttons, writer
+    return screen_buffer, buttons, loss, writer
 
 def capture_screenbuffer(writer, summary, step, capture_each = 30):
     if(step % capture_each == 0):
@@ -59,32 +63,33 @@ def capture_screenbuffer(writer, summary, step, capture_each = 30):
     return step + 1
 
 def main():
-    screen_buffer, output, writer = setup_tensor_graph()
+    screen_buffer, buttons, loss_tensor, writer = setup_tensor_graph()
     env = make(game='SonicTheHedgehog-Genesis', state = 'LabyrinthZone.Act1')
     obs = env.reset()
 
-    button_presses = [12,]
+    button_presses = [0,0,0,0,0,0,0,1,0,0,0,0,]
     done = False
 
     summary = tf.summary.merge_all()
+    optimizer = tf.train.GradientDescentOptimizer(0.5)
 
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         step = 0
         while not done:
-            print(button_presses)
+            button_presses = [0,0,0,0,0,0,0,1,0,0,0,0,]
             obs, rew, done, info = env.step(button_presses)
             
             feed_dict = {
                 screen_buffer : obs
             }
 
-            summary_str, button_presses = sess.run([summary, output], feed_dict)
+            summary_str, button_presses = sess.run([summary, buttons], feed_dict)
             
             step = capture_screenbuffer(writer, summary_str, step)
 
             # Train network here
-            
+            # optimizer.minimize(loss_tensor)
             env.render()
 
         obs = env.reset()
