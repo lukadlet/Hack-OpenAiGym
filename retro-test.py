@@ -90,7 +90,7 @@ def setup_tensor_graph():
     # Write everything down    
     writer = tf.summary.FileWriter('./logs/dev/', tf.get_default_graph())
     return screen_buffer, output, actual_loss, error, writer
-
+ 
 
 def capture_screenbuffer(writer, summary, step, capture_each = 30):
     if(step % capture_each == 0):
