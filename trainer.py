@@ -16,16 +16,26 @@ class Trainer:
     def __init__(self):
         self.done = False
         self.pause = False
-        self.step = 0
 
     def _start_environment(self, environment):
         self.done = False
-        self.step = 0
 
         environment.load()
 
     def train(self, agent, environment):
         print("Training", agent, " on ", environment)
+
+        # This should be in a loop for x times, with y environments
+
+        self._start_environment(environment)
+    
+        while not self.done:
+            agent.tick(environment.screen, environment.loss)
+            environment.step(agent.next_action)
+            agent.optimize()
+            # Don't even think about rendering
+            if environment.done:
+                self.done = True
 
     def test(self, agent, environment):
         print("Testing", agent, " on ", environment)
@@ -38,7 +48,7 @@ class Trainer:
             if environment.done:
                 self.done = True
         
-        print("Testing done. You lost.")
+        print("Testing done in ", environment.step_count, "steps")
 
     def replay(self, environment, filename):
         print("Replaying", filename, " on ", environment)
