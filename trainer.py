@@ -3,7 +3,6 @@ Luc Kadletz, 7/14/2019
 
 '''
 
-
 # Standard Libraries
 
 # Third Party Imports
@@ -15,19 +14,34 @@ from enviroment import Environment
 class Trainer:
 
     def __init__(self):
-        pass
+        self.done = False
+        self.pause = False
+        self.step = 0
 
-    def train(self, agent, enviroment):
-        print("Training {agent} on {environment}")
-        pass
+    def _start_environment(self, environment):
+        self.done = False
+        self.step = 0
 
-    def test(self, agent, enviroment):
-        print("Testing {agent} on {environment}")
-        pass
+        environment.load()
 
-    def replay(self, enviroment, filename):
-        print("Replaying {filename} on {environment}")
-        pass
+    def train(self, agent, environment):
+        print("Training", agent, " on ", environment)
+
+    def test(self, agent, environment):
+        print("Testing", agent, " on ", environment)
+        self._start_environment(environment)
+    
+        while not self.done:
+            agent.tick(environment.screen, environment.loss)
+            environment.step(agent.next_action)
+            environment.render()
+            if environment.done:
+                self.done = True
+        
+        print("Testing done. You lost.")
+
+    def replay(self, environment, filename):
+        print("Replaying", filename, " on ", environment)
 
 def main():
     # By default, make a new agent, and train it on the first game, state listed
@@ -36,5 +50,5 @@ def main():
     enviroment = Environment(Environment.GAMES[0], Environment.STATES[0])
     trainer.test(agent, enviroment)
 
-if __name__ == 'main':
+if __name__ == '__main__':
     main()
