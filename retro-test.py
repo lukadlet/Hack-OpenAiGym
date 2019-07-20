@@ -67,7 +67,7 @@ def setup_tensor_graph():
         screen_buffer = tf.placeholder(tf.float32, name="ScreenBuffer")
         screen_image = tf.reshape(screen_buffer, [-1, 224, 320, 3])
 
-    # Greyscale and resize the screen so its a computable size
+    # Greyscale and resize the screen so it's a computable size
     screen_flattened = filter_screen(screen_image, 64, 64)
 
     # Actual AI
@@ -90,7 +90,6 @@ def setup_tensor_graph():
     # Write everything down    
     writer = tf.summary.FileWriter('./logs/dev/', tf.get_default_graph())
     return screen_buffer, output, actual_loss, error, writer
- 
 
 def capture_screenbuffer(writer, summary, step, capture_each = 30):
     if(step % capture_each == 0):

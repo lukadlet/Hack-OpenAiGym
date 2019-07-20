@@ -1,22 +1,65 @@
 '''
-Luc Kadletz 6-29-2019
 
-For training the model on the game.
+Luc Kadletz, 7/14/2019
+
 '''
 
+# Standard Libraries
+
+# Third Party Imports
+
+# Local Imports
+from agent import Agent
+from enviroment import Environment
+
+class Trainer:
+
+    def __init__(self):
+        self.done = False
+        self.pause = False
+
+    def _start_environment(self, environment):
+        self.done = False
+
+        environment.load()
+
+    def train(self, agent, environment):
+        print("Training", agent, " on ", environment)
+
+        # This should be in a loop for x times, with y environments
+
+        self._start_environment(environment)
+    
+        while not self.done:
+            agent.tick(environment.screen, environment.loss)
+            environment.step(agent.next_action)
+            agent.optimize()
+            # Don't even think about rendering
+            if environment.done:
+                self.done = True
+
+    def test(self, agent, environment):
+        print("Testing", agent, " on ", environment)
+        self._start_environment(environment)
+    
+        while not self.done:
+            agent.tick(environment.screen, environment.loss)
+            environment.step(agent.next_action)
+            environment.render()
+            if environment.done:
+                self.done = True
+        
+        print("Testing done in ", environment.step_count, "steps")
+
+    def replay(self, environment, filename):
+        print("Replaying", filename, " on ", environment)
+
 def main():
-	print('Loading model X on game Y, scene Z')
-	# Build Tesnor Graph
-	# Load model data
-	# For number of runs / scnenes:
-		# Read game
-		# Feed model
-		# Get action
-		# Simulate game
-		# Render game (maybe)
-		# Train model
-	# Save model
-	pass
+    # By default, make a new agent, and train it on the first game, state listed
+    trainer = Trainer()
+    agent = Agent()
+    enviroment = Environment(Environment.GAMES[0], Environment.STATES[0])
+    trainer.test(agent, enviroment)
 
 if __name__ == '__main__':
-	main()
+    main()
