@@ -14,15 +14,15 @@ import game
 
 class Environment:
 
-    def __init__(self, game: str, state: str):
+    def __init__(self, game: str, state: str, loss_fn: callable):
         self.game = game
         self.state = state
+        self.loss_fn = loss_fn
 
         self.gym = None
         self.done = False
         self.step_count = 0
         self.record = False
-
         self.loss = 0
 
     def load(self):
@@ -33,9 +33,9 @@ class Environment:
         self.screen = self.gym.reset()
 
     def step(self, buttons):
-        obs, rew, done, info = self.gym.step(buttons)
+        obs, _rew, done, info = self.gym.step(buttons)
         self.screen = obs
-        self.loss = -rew  # sure?????
+        self.loss = 0  # self.loss_fn(info) This should be in agent
         self.done = done
         self.step_count = self.step_count + 1
 

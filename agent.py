@@ -65,11 +65,10 @@ class Agent:
             self.input: screen,
             self.loss: loss
         }
-
         self.next_action = self.actions[0]
 
     def optimize(self):
-        self.optimizer.minimize(self.error)
+        self.optimizer.minimize(self.loss)
 
     def _compute_error(self):
         return None

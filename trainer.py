@@ -61,8 +61,9 @@ def main():
     # By default, make a new agent, and train it on the first game, state listed
     trainer = Trainer()
     agent = Agent(Sonic.obs_size, Sonic.actions)
-    enviroment = Environment(Sonic.name, Sonic.states[0])
+    enviroment = Environment(Sonic.name, Sonic.states[0], None)
     trainer.test(agent, enviroment)
+
 
 if __name__ == '__main__':
     main()
