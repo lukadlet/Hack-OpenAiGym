@@ -3,7 +3,7 @@ To set up:
     python -m retro.import ./roms
 
 To run:
-    python retro-test.python
+    python trainer.py
 
 Where do environments go?:
     python -c "import gym as _; print(_.__path__)"
