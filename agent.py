@@ -15,8 +15,9 @@ class Agent:
     def __init__(self, obs_size: [int, int], actions: [[bool]]):
         self.obs_size = obs_size
         self.actions = actions
-        self.build()
         self.next_action = actions[0]  # Hold right
+
+        self.build()
 
     def build(self):
         # Here be magic bullshit
@@ -52,19 +53,27 @@ class Agent:
         self.session.run(tf.global_variables_initializer())
 
     def load(self, path):
-        self.saver.restore(self.session, path)
-        pass
+        try:
+            self.saver.restore(self.session, path)
+            print("Loaded session: ", path)
+        except Exception as ex:
+            print(ex)
+            print("Could not load session at ", path)
 
     def save(self, path):
-        # If not session error
-        self.saver.save(self.session, path)
-        print("Saved {0} at {1}")
+        try:
+            self.saver.save(self.session, path)
+            print("Saved at: ", path)
+        except Exception as ex:
+            print(ex)
+            print("Could not save at ", path)
 
-    def tick(self, screen, loss):
+    def tick(self, observation, loss):
         feed_dict = {
-            self.input: screen,
+            self.input: observation,
             self.loss: loss
         }
+
         self.next_action = self.actions[0]
 
     def optimize(self):

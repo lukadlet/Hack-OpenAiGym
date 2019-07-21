@@ -7,11 +7,11 @@ Luc Kadletz, 7/14/2019
 # Standard Libraries
 
 # Third Party Imports
-
+import argparse
 # Local Imports
 from agent import Agent
 from enviroment import Environment
-from game import Sonic
+from game import sonic
 
 
 class Trainer:
@@ -57,13 +57,23 @@ class Trainer:
         print("Replaying", filename, " on ", environment)
 
 
-def main():
+def main(args):
     # By default, make a new agent, and train it on the first game, state listed
     trainer = Trainer()
-    agent = Agent(Sonic.obs_size, Sonic.actions)
-    enviroment = Environment(Sonic.name, Sonic.states[0], None)
+    agent = Agent(sonic.obs_size, sonic.actions)
+    enviroment = Environment(sonic.name, sonic.states[0], None)
+
+    agent.start()
+    if(args.model != ""):
+        agent.load(args.model)
+
     trainer.test(agent, enviroment)
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-m", "--model", type=str, default="", required=False,
+                        help="Load a model to use for training")
+    args = parser.parse_args()
+
+    main(args)

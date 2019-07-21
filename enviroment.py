@@ -21,7 +21,7 @@ class Environment:
 
         self.gym = None
         self.done = False
-        self.step_count = 0
+        self.step_count = 0  # Maybe this should be a property of the agent?
         self.record = False
         self.loss = 0
 

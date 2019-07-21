@@ -18,45 +18,45 @@ class Game:
         self.actions = actions
 
 
-Sonic = Game(
+sonic = Game(
     name='SonicTheHedgehog-Genesis',
     states=[
         'GreenHillZone.Act1'
     ],
     obs_size=[244, 320],
     actions=[
-        # B, A, MODE, START, UP, DOWN, LEFT, RIGHT, C, Y, X, Z
+        # [ B, A, MODE, START, UP, DOWN, LEFT, RIGHT, C, Y, X, Z ]
         # RIGHT
         [False, False, False, False, False, False,
-            False, True, False, False, False, False],
+         False, True, False, False, False, False],
         # LEFT
         [False, False, False, False, False, False,
-            True, False, False, False, False, False],
+         True, False, False, False, False, False],
         # DOWN + LEFT
         [False, False, False, False, False, True,
-            True, False, False, False, False, False],
+         True, False, False, False, False, False],
         # DOWN + RIGHT
         [False, False, False, False, False, True,
-            False, True, False, False, False, False],
+         False, True, False, False, False, False],
         # DOWN
         [False, False, False, False, False, True,
-            False, False, False, False, False, False],
+         False, False, False, False, False, False],
         # JUMP + DOWN
         [True, False, False, False, False, True,
-            False, False, False, False, False, False],
+         False, False, False, False, False, False],
         # JUMP
         [True, False, False, False, False, False,
-            False, False, False, False, False, False],
+         False, False, False, False, False, False],
         # NOTHING
         [False, False, False, False, False, False,
-            False, False, False, False, False, False]
+         False, False, False, False, False, False]
     ]
 )
 
 '''
 This is just a guess, I have not imported anything yet
 '''
-Pokemon = Game(
+pokemon = Game(
     name='PokemonRed-Gameboy',
     states=[
         'Rival.1.A',
@@ -65,7 +65,7 @@ Pokemon = Game(
     ],
     obs_size=[160, 144],
     actions=[
-        # B, A, START, SELECT, UP, DOWN, LEFT, RIGHT
+        # [ B, A, START, SELECT, UP, DOWN, LEFT, RIGHT ]
         # B
         [True, False, False, False, False, False, False, False],
         # A
@@ -77,6 +77,8 @@ Pokemon = Game(
         # LEFT
         [False, False, False, False, False, False, True, False],
         # RIGHT
-        [False, False, False, False, False, False, False, True]
+        [False, False, False, False, False, False, False, True],
+        # NOTHING
+        [False, False, False, False, False, False, False, False]
     ]
 )
