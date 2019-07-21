@@ -1,0 +1,4 @@
+PokemonRed-Gameboy
+Rival.1.A
+Rival.1.B
+Rival.1.C

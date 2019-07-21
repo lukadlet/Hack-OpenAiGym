@@ -60,8 +60,12 @@ class Trainer:
 def main(args):
     # By default, make a new agent, and train it on the first game, state listed
     trainer = Trainer()
-    agent = Agent(sonic.obs_size, sonic.actions)
-    enviroment = Environment(sonic.name, sonic.states[0], None)
+    agent = Agent(sonic.obs_size, sonic.actions, sonic.loss_fn)
+    enviroment = Environment(sonic.name, sonic.states[0])
+
+    if(args.train_sequence != None):
+        lines = [line.rstrip('\n') for line in args.train_sequence]
+        print("I'm totally gonna train on ", lines)
 
     agent.start()
     if(args.model != ""):
@@ -72,8 +76,12 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("-m", "--model", type=str, default="", required=False,
-                        help="Load a model to use for training")
+    parser.add_argument('-m', '--model', type=str, default='', required=False,
+                        help="Load a model to use for training/testing")
+    parser.add_argument('-t', '--train_sequence', type=open, default=None,
+                        help="A path to a text file containing the game to train, " +
+                        "followed by each scene to train")
+
     args = parser.parse_args()
 
     main(args)
