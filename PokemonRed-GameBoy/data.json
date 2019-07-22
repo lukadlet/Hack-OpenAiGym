@@ -5,7 +5,7 @@
         "type": "|u1"
       },
       "poke1HP": {
-        "address": 53162,
+        "address": 53612,
         "type": ">u2"
       },
       "poke2HP": {
