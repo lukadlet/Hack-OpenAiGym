@@ -5,11 +5,70 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Test trainer",
+            "name": "Test Trainer",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}//trainer.py",
             "console": "integratedTerminal"
-        }
+        },
+        {
+            "name": "Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Train - Sonic",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}//trainer.py",
+            "args": [
+                "--game",
+                "sonic",
+                "--train_sequence",
+                "train_sequences//sonic_test.txt"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Evaluate Trained - Sonic",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}//trainer.py",
+            "args": [
+                "--game",
+                "sonic",
+                "--model",
+                "train_sequences//completed//sonic_test"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Train - Pokemon",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}//trainer.py",
+            "args": [
+                "--train_sequence",
+                "train_sequences//pokemon_gauntlet.txt",
+                "--game",
+                "pokemon",
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Evaluate Trained - Pokemon",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}//trainer.py",
+            "args": [
+                "--model",
+                "train_sequences//completed//pokemon_gauntlet",
+                "--game",
+                "pokemon"
+            ],
+            "console": "integratedTerminal"
+        },
     ]
 }

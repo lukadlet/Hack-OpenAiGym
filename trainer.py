@@ -11,7 +11,7 @@ import argparse
 # Local Imports
 from agent import Agent
 from enviroment import Environment
-from game import sonic
+from game import sonic, pokemon
 
 
 class Trainer:
@@ -60,8 +60,17 @@ class Trainer:
 def main(args):
     # By default, make a new agent, and train it on the first game, state listed
     trainer = Trainer()
-    agent = Agent(sonic.obs_size, sonic.actions, sonic.loss_fn)
-    enviroment = Environment(sonic.name, sonic.states[0])
+
+    agent = None,
+    enviroment = None
+
+    if(args.game == 'pokemon'):
+        print("Pokemon isn't ready yet!")
+        agent = Agent(pokemon.obs_size, pokemon.actions, pokemon.loss_fn)
+        enviroment = Environment(pokemon.name, pokemon.states[0])
+    else:  # assume args.game == 'sonic
+        agent = Agent(sonic.obs_size, sonic.actions, sonic.loss_fn)
+        enviroment = Environment(sonic.name, sonic.states[0])
 
     if(args.train_sequence != None):
         lines = [line.rstrip('\n') for line in args.train_sequence]
@@ -81,6 +90,9 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--train_sequence', type=open, default=None,
                         help="A path to a text file containing the game to train, " +
                         "followed by each scene to train")
+    parser.add_argument('-g', '--game', default='sonic', const='sonic',
+                        nargs='?', choices=['sonic', 'pokemon'],
+                        help="The game to train on")
 
     args = parser.parse_args()
 
