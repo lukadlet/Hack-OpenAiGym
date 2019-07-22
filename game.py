@@ -25,8 +25,8 @@ class Game:
 
 
 def sonic_loss(info):
-    print("Yuup, thats ", info, "alright")
-    return 0.0
+    # print("Yuup, thats ", info, "alright")
+    return info["screen_x_end"] - info["x"]
 
 
 sonic = Game(

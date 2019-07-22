@@ -19,9 +19,14 @@ class Environment:
         self.state = state
 
         self.gym = None
+
+        self.screen = None
+        self.info = None
+        self.reward = None
+
+        self.record = False
         self.done = False
         self.step_count = 0  # Maybe this should be a property of the agent?
-        self.record = False
 
     def load(self):
         if(self.record):
@@ -31,10 +36,13 @@ class Environment:
         self.screen = self.gym.reset()
 
     def step(self, buttons):
-        obs, _rew, done, info = self.gym.step(buttons)
-        self.screen = obs
-        self.done = done
         self.step_count = self.step_count + 1
+
+        obs, rew, done, info = self.gym.step(buttons)
+        self.screen = obs
+        self.reward = rew
+        self.done = done
+        self.info = info
 
     def render(self):
         self.gym.render()

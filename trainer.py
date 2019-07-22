@@ -45,7 +45,7 @@ class Trainer:
         self._start_environment(environment)
 
         while not self.done:
-            agent.tick(environment.screen, environment.loss)
+            agent.tick(environment.screen, environment.info)
             environment.step(agent.next_action)
             environment.render()
             if environment.done:
