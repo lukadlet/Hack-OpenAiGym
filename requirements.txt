@@ -1,4 +1,3 @@
 gym_retro==0.7.0
 tensorflow==2.0.0b1
 numpy==1.16.4
-retro==2.7.0
