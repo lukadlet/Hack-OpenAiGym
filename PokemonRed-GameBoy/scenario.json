@@ -1,0 +1,12 @@
+{
+    "done": {
+      "variables": {
+        "inBattle": {
+          "op": "zero"
+        }
+      }
+    },
+    "reward": {
+      
+    }
+  }

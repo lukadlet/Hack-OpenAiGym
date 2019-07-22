@@ -1,0 +1,32 @@
+{
+    "info": {
+      "inBattle": {
+        "address": 53335,
+        "type": "|u1"
+      },
+      "poke1HP": {
+        "address": 53162,
+        "type": ">u2"
+      },
+      "poke2HP": {
+        "address": 53656,
+        "type": ">u2"
+      },
+      "poke3HP": {
+        "address": 53700,
+        "type": ">u2"
+      },
+      "poke4HP": {
+        "address": 53744,
+        "type": ">u2"
+      },
+      "poke5HP": {
+        "address": 53788,
+        "type": ">u2"
+      },
+      "poke6HP": {
+        "address": 53832,
+        "type": ">u2"
+      }
+    }
+  }
