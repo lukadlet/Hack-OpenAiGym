@@ -98,7 +98,7 @@ class Agent:
         self.next_action = self.actions[0]
 
     def optimize(self):
-        self.optimizer.minimize(self.loss)
+        self.optimizer.minimize(self.loss_estimator)
 
     def select_action(self, action):
         index = np.argmax(action)

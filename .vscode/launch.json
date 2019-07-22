@@ -8,7 +8,7 @@
             "name": "Test Trainer",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}//trainer.py",
+            "program": "${workspaceFolder}//driver.py",
             "console": "integratedTerminal"
         },
         {
@@ -22,7 +22,7 @@
             "name": "Train - Sonic",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}//trainer.py",
+            "program": "${workspaceFolder}//driver.py",
             "args": [
                 "--game",
                 "sonic",
@@ -35,7 +35,7 @@
             "name": "Evaluate Trained - Sonic",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}//trainer.py",
+            "program": "${workspaceFolder}//driver.py",
             "args": [
                 "--game",
                 "sonic",
@@ -48,7 +48,7 @@
             "name": "Train - Pokemon",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}//trainer.py",
+            "program": "${workspaceFolder}//driver.py",
             "args": [
                 "--train_sequence",
                 "train_sequences//pokemon_gauntlet.txt",
@@ -61,7 +61,7 @@
             "name": "Evaluate Trained - Pokemon",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}//trainer.py",
+            "program": "${workspaceFolder}//driver.py",
             "args": [
                 "--model",
                 "train_sequences//completed//pokemon_gauntlet",
