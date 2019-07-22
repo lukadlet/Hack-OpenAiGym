@@ -37,9 +37,11 @@ def main():
         environment = Environment(sequence.game, sequence.states[0])
         trainer.test(agent, environment)
     else:
+        print("Training on "+ str(len(sequence.states)) + " states.")
         for state in sequence.states:
             environment = Environment(sequence.game, state)
             trainer.train(agent, environment)
+            print("Training on " + environment + "complete.")
         save_completed_sequence(agent, args.train_sequence)
 
 
