@@ -4,7 +4,7 @@ Microsoft Hackathon
 '''
 
 # Standard Libraries
-
+import os
 # Third Party Imports
 import argparse
 # Local Imports
@@ -28,7 +28,8 @@ def main():
     sequence = make_training_sequence(args.train_sequence, args.game)
 
     agent.start()
-    # TODO load here if a model was provided
+    if(args.model != ''):
+        agent.load(args.model)
 
     trainer = Trainer()
 
@@ -39,7 +40,17 @@ def main():
         for state in sequence.states:
             environment = Environment(sequence.game, state)
             trainer.train(agent, environment)
-        # TODO Save completed sequence somewhere
+        save_completed_sequence(agent, args.train_sequence)
+
+
+def save_completed_sequence(agent, sequence_file):
+    name = os.path.basename(sequence_file.name.replace('.txt', ''))
+    folder = os.path.dirname(sequence_file.name) + '/completed/' + name
+    if(not os.path.exists(folder)):
+        os.makedirs(folder)
+    location = folder + '/' + name
+
+    agent.save(location)
 
 
 def make_training_sequence(sequence_file, game):

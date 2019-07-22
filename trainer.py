@@ -20,7 +20,6 @@ class Trainer:
 
     def _start_environment(self, environment):
         self.done = False
-
         environment.load()
 
     def train(self, agent, environment):
