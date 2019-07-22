@@ -75,15 +75,13 @@ This is just a guess, I have not imported anything yet
 
 def pokemon_loss(info):
     print("I choose you, ", info, "!")
-    return 0.0
+    return -1*info["poke1HP"]
 
 
 pokemon = Game(
     name='PokemonRed-Gameboy',
     states=[
-        'Rival.1.A',
-        'Rival.1.B',
-        'Rival.1.C',
+        'bulbasaur_vs_charmander'
     ],
     obs_size=[160, 144],
     actions=[
