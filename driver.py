@@ -25,19 +25,23 @@ def main():
     args = parse_args()
 
     agent = make_agent(args.game)
-    sequence = make_training_sequence(args.train_sequence, args.game)
+    agent.log_location = './logs/' + args.logs
 
-    agent.start()
     if(args.model != ''):
         agent.load(args.model)
 
+    agent.start()
+
+    sequence = make_training_sequence(args.train_sequence, args.game)
+
     trainer = Trainer()
+    trainer.headless = args.headless
 
     if(args.train_sequence == None):
         environment = Environment(sequence.game, sequence.states[0])
         trainer.test(agent, environment)
     else:
-        print("Training on "+ str(len(sequence.states)) + " states.")
+        print("Training on " + str(len(sequence.states)) + " states.")
         for state in sequence.states:
             environment = Environment(sequence.game, state)
             trainer.train(agent, environment)
@@ -106,6 +110,12 @@ def parse_args():
     parser.add_argument('-g', '--game', default='sonic', const='sonic',
                         nargs='?', choices=['sonic', 'pokemon'],
                         help="The game to train on")
+
+    parser.add_argument('--logs', type=str, default='dev',
+                        required=False, help="The name of folder to store logs in.")
+
+    parser.add_argument('-l', '--headless', action='store_true',
+                        help="Turn on to skip rendering the display")
 
     return parser.parse_args()
 
