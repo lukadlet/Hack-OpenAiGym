@@ -130,6 +130,7 @@ class Agent:
         self.writer.add_summary(summary_str, self.step_count)
 
     def optimize(self):
+        self.optimizer.minimize(self.error)
         self.optimizer.minimize(self.loss_estimator)
 
     def _get_novelty(self, observation):
@@ -147,9 +148,6 @@ class Agent:
         #if novelty is nonzero, reset step count
         if(novelty > NOVELTY_THRESHOLD):
             self.idle_count = 0
-            print("go")
-        else:
-            print("idle")
         if(novelty > NOVELTY_MAX):
             novelty = NOVELTY_MAX
         
