@@ -51,7 +51,8 @@ class Agent:
             # Just a layer of neurons to predict output
             weights = tf.Variable(tf.random_normal(
                 [self._downsample_size, self.action_size]), name="weights")
-            biases = tf.Variable(tf.random_normal([self.action_size, ]), name="biases")
+            biases = tf.Variable(tf.random_normal(
+                [self.action_size, ]), name="biases")
             layer = tf.matmul(screen_flattened, weights) + biases
 
             self.output = tf.nn.l2_normalize(layer)
@@ -60,7 +61,8 @@ class Agent:
             # Create an input to get our actual loss at runtime
             self.loss_in = tf.placeholder(tf.float32, name="loss_actual")
             # Just a layer of neurons to predict loss
-            weights = tf.Variable(tf.random_normal([self.action_size, 99]), name="weights")
+            weights = tf.Variable(tf.random_normal(
+                [self.action_size, 99]), name="weights")
             biases = tf.Variable(tf.random_normal([99]), name="biases")
             self.loss_estimator = tf.matmul(self.output, weights) + biases
             # Register the loss with tf
