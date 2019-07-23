@@ -68,14 +68,11 @@ sonic = Game(
 )
 
 
-'''
-This is just a guess, I have not imported anything yet
-'''
-
-
 def pokemon_loss(info):
+    if(info is None):
+        return 0.0
     print("I choose you, ", info, "!")
-    return -1*info["poke1HP"]
+    return -1 * info["poke1HP"]
 
 
 pokemon = Game(
@@ -86,10 +83,10 @@ pokemon = Game(
     obs_size=[160, 144],
     actions=[
         # [ B, A, START, SELECT, UP, DOWN, LEFT, RIGHT ]
-        # A
-        [False, True, False, False, False, False, False, False],
         # B
         [True, False, False, False, False, False, False, False],
+        # A
+        [False, True, False, False, False, False, False, False],
         # UP
         [False, False, False, False, True, False, False, False],
         # DOWN

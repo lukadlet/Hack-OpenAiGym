@@ -18,9 +18,11 @@ class Agent:
 
     def __init__(self, obs_size: [int, int], actions: [[bool]], loss_fn: callable):
         self.obs_size = obs_size
+        self.action_size = len(actions)
         self.actions = actions
         self.loss_fn = loss_fn
 
+        self.step_count = 0
         self.next_action = actions[0]  # Hold right
 
         self._build()
@@ -48,8 +50,8 @@ class Agent:
         with tf.name_scope("reinforcement_learning"):
             # Just a layer of neurons to predict output
             weights = tf.Variable(tf.random_normal(
-                [self._downsample_size, 8]), name="weights")
-            biases = tf.Variable(tf.random_normal([8, ]), name="biases")
+                [self._downsample_size, self.action_size]), name="weights")
+            biases = tf.Variable(tf.random_normal([self.action_size, ]), name="biases")
             layer = tf.matmul(screen_flattened, weights) + biases
 
             self.output = tf.nn.l2_normalize(layer)
@@ -58,7 +60,7 @@ class Agent:
             # Create an input to get our actual loss at runtime
             self.loss_in = tf.placeholder(tf.float32, name="loss_actual")
             # Just a layer of neurons to predict loss
-            weights = tf.Variable(tf.random_normal([8, 99]), name="weights")
+            weights = tf.Variable(tf.random_normal([self.action_size, 99]), name="weights")
             biases = tf.Variable(tf.random_normal([99]), name="biases")
             self.loss_estimator = tf.matmul(self.output, weights) + biases
             # Register the loss with tf
@@ -85,17 +87,23 @@ class Agent:
         self.summary = tf.summary.merge_all()
 
     def tick(self, observation, loss_info):
+        self.step_count = self.step_count + 1
+
         feed_dict = {
             self.input: observation,
             self.loss_in: self.loss_fn(loss_info)
         }
+
         # Note that we need to support not always getting info when
         #  evaluating, and only the reward instead
 
         summary_str, output_values = self.session.run(
             [self.summary, self.output], feed_dict)
 
-        self.next_action = self.actions[0]
+        self.next_action = self.select_action(output_values)
+
+        # Write to log file for debugging (is this too slow to do every frame?)
+        self.writer.add_summary(summary_str, self.step_count)
 
     def optimize(self):
         self.optimizer.minimize(self.loss_estimator)
