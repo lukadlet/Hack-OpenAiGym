@@ -13,9 +13,6 @@ import numpy as np
 
 class Agent:
 
-    _downsample_dimensions = [128, 128]
-    _downsample_size = np.prod(_downsample_dimensions)
-
     def __init__(self, obs_size: [int, int], actions: [[bool]], loss_fn: callable):
         self.obs_size = obs_size
         self.action_size = len(actions)
@@ -32,25 +29,26 @@ class Agent:
             # screen_buffer is a raw vector of bits
             screen_buffer = tf.placeholder(tf.float32, name="screen_buffer")
             self.input = screen_buffer
+            self.totalPixels = self.obs_size[0] * self.obs_size[1]
             # screen_image is the image after it's been reshaped to a pixel tensor
             screen_dimensions = [-1, self.obs_size[0], self.obs_size[1], 3]
             screen_image = tf.reshape(screen_buffer, screen_dimensions)
             tf.summary.image('screen_image', screen_image)
             # screen_greyscale is the image after it's been transformed to greyscale
-            screen_greyscale = tf.image.rgb_to_grayscale(screen_image)
-            tf.summary.image('screen_greyscale', screen_greyscale)
+            # screen_greyscale = tf.image.rgb_to_grayscale(screen_image)
+            # tf.summary.image('screen_greyscale', screen_greyscale)
             # screen_downsampled is a downscale for a standard / reasonable input size for RL
-            screen_downsampled = tf.image.resize_bicubic(
-                screen_greyscale, self._downsample_dimensions)
-            tf.summary.image('screen_downsampled', screen_downsampled)
+            # screen_downsampled = tf.image.resize_bicubic(
+            #     screen_greyscale, self._downsample_dimensions)
+            # tf.summary.image('screen_downsampled', screen_downsampled)
             # screen_flattened is a 1D arrangement of the downsample
             screen_flattened = tf.reshape(
-                screen_downsampled, [-1, self._downsample_size])
+                screen_image, [-1, self.totalPixels])
 
         with tf.name_scope("reinforcement_learning"):
             # Just a layer of neurons to predict output
             weights = tf.Variable(tf.random_normal(
-                [self._downsample_size, self.action_size]), name="weights")
+                [self.totalPixels, self.action_size]), name="weights")
             biases = tf.Variable(tf.random_normal([self.action_size, ]), name="biases")
             layer = tf.matmul(screen_flattened, weights) + biases
 
@@ -75,8 +73,7 @@ class Agent:
         self.optimizer = tf.train.GradientDescentOptimizer(0.5)
 
         # writer is for writing debugging info
-        self.writer = tf.summary.FileWriter(
-            './logs/dev', tf.get_default_graph())
+        self.writer = tf.summary.FileWriter('./logs/dev', tf.get_default_graph())
         # TODO we need to clear dev logs before running, and we need to store real training logs somewhere else
 
         # saver is for saving / loading the model
