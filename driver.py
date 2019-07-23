@@ -117,6 +117,9 @@ def parse_args():
     parser.add_argument('-l', '--headless', action='store_true',
                         help="Turn on to skip rendering the display")
 
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help="Turn on spammy console stuff")
+
     return parser.parse_args()
 
 

@@ -27,6 +27,10 @@
       "poke6HP": {
         "address": 53832,
         "type": ">u2"
+      },
+      "enemy1HP": {
+        "address": 55452,
+        "type": ">u2"
       }
     }
   }

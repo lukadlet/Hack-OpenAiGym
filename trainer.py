@@ -17,6 +17,7 @@ class Trainer:
     def __init__(self):
         self.done = False
         self.headless = False
+        self.verbose = False
 
     def _start_environment(self, environment):
         self.done = False
@@ -30,6 +31,10 @@ class Trainer:
         while not self.done:
             environment.step(agent.next_action)
             agent.tick(environment.screen, environment.info)
+            if(self.verbose):
+                print(environment)
+                print(agent)
+                print(environment.info)
             if(not self.headless):
                 environment.render()
             if environment.done:
@@ -43,6 +48,8 @@ class Trainer:
         while not self.done:
             environment.step(agent.next_action)
             agent.tick(environment.screen, environment.info)
+            if(self.verbose):
+                pass
             if(not self.headless):
                 environment.render()
             if environment.done:
