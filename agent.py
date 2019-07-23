@@ -127,7 +127,7 @@ class Agent:
         self.next_action = self.select_action(output_values)
 
         # Write to log file for debugging (is this too slow to do every frame?)
-        self.writer.add_summary(summary_str, self.idle_count)
+        self.writer.add_summary(summary_str, self.step_count)
 
     def optimize(self):
         self.optimizer.minimize(self.loss_estimator)
