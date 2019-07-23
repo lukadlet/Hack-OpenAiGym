@@ -4,7 +4,8 @@ Luc Kadletz, 7/14/2019
 '''
 
 # Standard Libraries
-
+import os
+import shutil
 # Third Party Imports
 import tensorflow as tf
 import numpy as np
@@ -22,6 +23,7 @@ class Agent:
         self.actions = actions
         self.loss_fn = loss_fn
 
+        self.log_location = '.logs/dev'
         self.step_count = 0
         self.next_action = actions[0]  # Hold right
 
@@ -76,18 +78,26 @@ class Agent:
         # off the shelf gradient descent optimization
         self.optimizer = tf.train.GradientDescentOptimizer(0.5)
 
-        # writer is for writing debugging info
-        self.writer = tf.summary.FileWriter(
-            './logs/dev', tf.get_default_graph())
-        # TODO we need to clear dev logs before running, and we need to store real training logs somewhere else
-
         # saver is for saving / loading the model
         self.saver = tf.train.Saver()
 
     def start(self):
+        self._clear_logs()
+        self.writer = tf.summary.FileWriter(
+            self.log_location, tf.get_default_graph())
+
         self.session = tf.Session()
         self.session.run(tf.global_variables_initializer())
         self.summary = tf.summary.merge_all()
+
+    def _clear_logs(self):
+        if(os.path.exists(self.log_location)):
+            for filename in os.listdir(self.log_location):
+                filepath = os.path.join(self.log_location, filename)
+                try:
+                    shutil.rmtree(filepath)
+                except OSError:
+                    os.remove(filepath)
 
     def tick(self, observation, loss_info):
         self.step_count = self.step_count + 1
@@ -130,9 +140,6 @@ class Agent:
         except Exception as ex:
             print(ex)
             print("Could not save at ", path)
-
-    def _compute_error(self):
-        return None
 
     def __str__(self):
         return str.format("[Agent - Actions x {0}, Next Action: {1}]",
