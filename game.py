@@ -76,7 +76,7 @@ def pokemon_loss(info):
 
 
 pokemon = Game(
-    name='PokemonRed-Gameboy',
+    name='PokemonRed-GameBoy',
     states=[
         'bulbasaur_vs_charmander'
     ],
