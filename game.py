@@ -69,7 +69,7 @@ def pokemon_loss(info):
     step_penalty = info["step_count"]
     agent_total_hp = (info["poke1HP"] + info["poke2HP"] + info["poke3HP"] +
         info["poke4HP"] + info["poke5HP"] + info["poke6HP"])
-    enemy_total_hp = info["enemy1HP"]
+    enemy_total_hp = info["enemyHP"]
     return step_penalty + enemy_total_hp - agent_total_hp
 
 

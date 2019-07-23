@@ -43,6 +43,8 @@ class Agent:
                 tf.keras.layers.Dense(self.obs_size[0]/10, activation=tf.nn.relu),
                 tf.keras.layers.Dense(self.action_size)
             ])
+            prediction = model(screen_flattened)
+            print(prediction)
 
         with tf.name_scope("reinforcement_learning"):
             # Just a layer of neurons to predict output
