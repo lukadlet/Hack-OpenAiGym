@@ -20,4 +20,4 @@ Pokemon HP:
 
 Enemy:
 
-D89C - Total enemy Pokémon
+CFE6-CFE7 - Enemy Pokemon HP

@@ -4,6 +4,10 @@
         "address": 53335,
         "type": "|u1"
       },
+      "enemyHP": {
+        "address": 53222,
+        "type": ">u2"
+      },
       "poke1HP": {
         "address": 53612,
         "type": ">u2"
