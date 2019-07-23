@@ -82,7 +82,6 @@ class Agent:
         self.saver = tf.train.Saver()
 
     def start(self):
-        # TODO we need to clear dev logs before running, and we need to store real training logs somewhere else
         self._clear_logs()
         self.writer = tf.summary.FileWriter(
             self.log_location, tf.get_default_graph())
