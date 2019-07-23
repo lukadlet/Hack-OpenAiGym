@@ -45,6 +45,17 @@
             "console": "integratedTerminal"
         },
         {
+            "name": "Debug - Pokemon",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}//driver.py",
+            "args": [
+                "--game",
+                "pokemon",
+            ],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Train - Pokemon",
             "type": "python",
             "request": "launch",
