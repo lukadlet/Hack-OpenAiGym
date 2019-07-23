@@ -25,7 +25,7 @@ class Game:
 
 
 def sonic_loss(info):
-    return info["screen_x_end"] - info["x"]
+    return info["screen_x_end"] - info["x"] - (info["novelty"] * 100)
 
 
 sonic = Game(
@@ -70,7 +70,7 @@ def pokemon_loss(info):
     agent_total_hp = (info["poke1HP"] + info["poke2HP"] + info["poke3HP"] +
         info["poke4HP"] + info["poke5HP"] + info["poke6HP"]) * 10
     enemy_total_hp = info["enemy1HP"] * 100
-    novelty = -info["novelty"]
+    novelty = -info["novelty"] * 500
 
     return (novelty) + step_penalty + enemy_total_hp - agent_total_hp
 

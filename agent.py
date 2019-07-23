@@ -133,19 +133,25 @@ class Agent:
         self.optimizer.minimize(self.loss_estimator)
 
     def _get_novelty(self, observation):
-        NOVELTY_MAX = 1000
+        # Note that these numbers only work well for pokemon
+        NOVELTY_MAX = 100
+        NOVELTY_THRESHOLD = 10
         novelty = 0.0
         if(self.last_observation is not None):
             for i in range(len(observation)):
                 delta = np.subtract(observation[i], self.last_observation[i])
                 novelty = novelty + np.linalg.norm(delta)
+            novelty = novelty / len(observation)
         self.last_observation = observation
 
+        #if novelty is nonzero, reset step count
+        if(novelty > NOVELTY_THRESHOLD):
+            self.idle_count = 0
+            print("go")
+        else:
+            print("idle")
         if(novelty > NOVELTY_MAX):
             novelty = NOVELTY_MAX
-        #if novelty is nonzero, reset step count
-        if(novelty > 1):
-            self.idle_count = 0
         
         return novelty
 
