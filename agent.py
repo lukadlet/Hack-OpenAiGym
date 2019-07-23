@@ -102,6 +102,9 @@ class Agent:
     def tick(self, observation, loss_info):
         self.step_count = self.step_count + 1
 
+        # Add step count to loss info
+        loss_info["step_count"] = self.step_count
+
         feed_dict = {
             self.input: observation,
             self.loss_in: self.loss_fn(loss_info)

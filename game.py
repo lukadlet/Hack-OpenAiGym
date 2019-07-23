@@ -26,8 +26,6 @@ class Game:
 
 def sonic_loss(info):
     # print("Yuup, thats ", info, "alright")
-    if(info is None):
-        return 0.0
     return info["screen_x_end"] - info["x"]
 
 
@@ -69,8 +67,6 @@ sonic = Game(
 
 
 def pokemon_loss(info):
-    if(info is None):
-        return 0.0
     print("I choose you, ", info, "!")
     return -1 * info["poke1HP"]
 

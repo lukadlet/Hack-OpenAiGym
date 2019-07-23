@@ -28,21 +28,21 @@ class Trainer:
         self._start_environment(environment)
 
         while not self.done:
-            agent.tick(environment.screen, environment.info)
             environment.step(agent.next_action)
-            agent.optimize()
+            agent.tick(environment.screen, environment.info)
             if(not self.headless):
                 environment.render()
             if environment.done:
                 self.done = True
+            agent.optimize()
 
     def test(self, agent, environment):
         print("Testing", agent, " on ", environment)
         self._start_environment(environment)
 
         while not self.done:
-            agent.tick(environment.screen, environment.info)
             environment.step(agent.next_action)
+            agent.tick(environment.screen, environment.info)
             if(not self.headless):
                 environment.render()
             if environment.done:
