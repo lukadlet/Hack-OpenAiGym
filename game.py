@@ -80,7 +80,7 @@ pokemon = Game(
     states=[
         'bulbasaur_vs_charmander'
     ],
-    obs_size=[160, 144],
+    obs_size=[144, 160],
     actions=[
         # [ B, A, START, SELECT, UP, DOWN, LEFT, RIGHT ]
         # B

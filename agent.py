@@ -77,6 +77,7 @@ class Agent:
         # writer is for writing debugging info
         self.writer = tf.summary.FileWriter(
             './logs/dev', tf.get_default_graph())
+        # TODO we need to clear dev logs before running, and we need to store real training logs somewhere else
 
         # saver is for saving / loading the model
         self.saver = tf.train.Saver()
