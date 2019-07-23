@@ -27,7 +27,9 @@
                 "--game",
                 "sonic",
                 "--train_sequence",
-                "train_sequences/sonic_test.txt"
+                "train_sequences/sonic_test.txt",
+                "--idle_timer",
+                "50"
             ],
             "console": "integratedTerminal"
         },
@@ -40,7 +42,9 @@
                 "--game",
                 "sonic",
                 "--model",
-                "train_sequences/completed/sonic_test"
+                "train_sequences/completed/sonic_test",
+                "--idle_timer",
+                "300"
             ],
             "console": "integratedTerminal"
         },
@@ -65,6 +69,8 @@
                 "train_sequences/pokemon_gauntlet.txt",
                 "--game",
                 "pokemon",
+                "--idle_timer",
+                "50"
             ],
             "console": "integratedTerminal"
         },
@@ -77,7 +83,9 @@
                 "--model",
                 "train_sequences//completed//pokemon_gauntlet",
                 "--game",
-                "pokemon"
+                "pokemon",
+                "--idle_timer",
+                "300"
             ],
             "console": "integratedTerminal"
         },

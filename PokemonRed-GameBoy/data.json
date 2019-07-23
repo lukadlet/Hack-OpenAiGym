@@ -29,7 +29,7 @@
         "type": ">u2"
       },
       "enemy1HP": {
-        "address": 55452,
+        "address": 53222,
         "type": ">u2"
       }
     }

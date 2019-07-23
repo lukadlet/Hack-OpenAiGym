@@ -24,8 +24,11 @@ class Agent:
         self.loss_fn = loss_fn
 
         self.log_location = '.logs/dev'
+        self.idle_count = 0
         self.step_count = 0
         self.next_action = actions[0]  # Hold right
+        self.loss = 0.0
+        self.last_observation = None
 
         self._build()
 
@@ -68,6 +71,8 @@ class Agent:
             biases = tf.Variable(tf.random_normal([99]), name="biases")
             self.loss_estimator = tf.matmul(self.output, weights) + biases
             # Register the loss with tf
+            tf.summary.scalar('actual_loss', self.loss_in)
+            # tf.summary.scalar('estimated_loss', self.loss_estimator)
             tf.losses.add_loss(self.loss_estimator)
 
         with tf.name_scope("error"):
@@ -100,14 +105,17 @@ class Agent:
                     os.remove(filepath)
 
     def tick(self, observation, loss_info):
+        self.idle_count = self.idle_count + 1
         self.step_count = self.step_count + 1
 
-        # Add step count to loss info
-        loss_info["step_count"] = self.step_count
+        # Add extra stuff to loss info
+        loss_info["idle_count"] = self.idle_count
+        loss_info["novelty"] = self._get_novelty(observation)
+        self.loss = self.loss_fn(loss_info)
 
         feed_dict = {
             self.input: observation,
-            self.loss_in: self.loss_fn(loss_info)
+            self.loss_in: self.loss
         }
 
         # Note that we need to support not always getting info when
@@ -119,10 +127,27 @@ class Agent:
         self.next_action = self.select_action(output_values)
 
         # Write to log file for debugging (is this too slow to do every frame?)
-        self.writer.add_summary(summary_str, self.step_count)
+        self.writer.add_summary(summary_str, self.idle_count)
 
     def optimize(self):
         self.optimizer.minimize(self.loss_estimator)
+
+    def _get_novelty(self, observation):
+        NOVELTY_MAX = 1000
+        novelty = 0.0
+        if(self.last_observation is not None):
+            for i in range(len(observation)):
+                delta = np.subtract(observation[i], self.last_observation[i])
+                novelty = novelty + np.linalg.norm(delta)
+        self.last_observation = observation
+
+        if(novelty > NOVELTY_MAX):
+            novelty = NOVELTY_MAX
+        #if novelty is nonzero, reset step count
+        if(novelty > 1):
+            self.idle_count = 0
+        
+        return novelty
 
     def select_action(self, action):
         index = np.argmax(action)
@@ -145,5 +170,5 @@ class Agent:
             print("Could not save at ", path)
 
     def __str__(self):
-        return str.format("[Agent - Actions x {0}, Next Action: {1}]",
-                          len(self.actions), self.next_action)
+        return str.format("[Agent - Actions x {0},\n Next Action: {1}\n Loss: {2}]",
+                          len(self.actions), self.next_action, self.loss)
