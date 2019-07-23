@@ -1,3 +1,7 @@
+# Development Tensorflow logs
+logs/dev/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
