@@ -17,3 +17,7 @@ Pokemon HP:
 1. D1F0-D1F1
 1. D21C-D21D
 1. D248-D249
+
+Enemy:
+
+CFE6-CFE7 - Enemy Pokemon HP
