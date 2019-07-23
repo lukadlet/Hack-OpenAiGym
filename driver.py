@@ -35,6 +35,7 @@ def main():
     sequence = make_training_sequence(args.train_sequence, args.game)
 
     trainer = Trainer()
+    trainer.headless = args.headless
 
     if(args.train_sequence == None):
         environment = Environment(sequence.game, sequence.states[0])
@@ -112,6 +113,9 @@ def parse_args():
 
     parser.add_argument('--logs', type=str, default='dev',
                         required=False, help="The name of folder to store logs in.")
+
+    parser.add_argument('-l', '--headless', action='store_true',
+                        help="Turn on to skip rendering the display")
 
     return parser.parse_args()
 

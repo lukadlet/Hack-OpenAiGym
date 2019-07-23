@@ -16,7 +16,7 @@ class Trainer:
 
     def __init__(self):
         self.done = False
-        self.pause = False
+        self.headless = False
 
     def _start_environment(self, environment):
         self.done = False
@@ -24,14 +24,15 @@ class Trainer:
 
     def train(self, agent, environment):
         print("Training", agent, " on ", environment)
-   
+
         self._start_environment(environment)
 
         while not self.done:
             agent.tick(environment.screen, environment.info)
             environment.step(agent.next_action)
             agent.optimize()
-            # Don't render
+            if(not self.headless):
+                environment.render()
             if environment.done:
                 self.done = True
 
@@ -42,7 +43,8 @@ class Trainer:
         while not self.done:
             agent.tick(environment.screen, environment.info)
             environment.step(agent.next_action)
-            environment.render()
+            if(not self.headless):
+                environment.render()
             if environment.done:
                 self.done = True
 
@@ -50,4 +52,3 @@ class Trainer:
 
     def replay(self, environment, filename):
         print("Replaying", filename, " on ", environment)
-
