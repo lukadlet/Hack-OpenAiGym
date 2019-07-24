@@ -23,48 +23,6 @@ class Game:
         self.actions = actions
         self.loss_fn = loss_fn
 
-
-def sonic_loss(info):
-    return info["screen_x_end"] - info["x"]
-
-
-sonic = Game(
-    name='SonicTheHedgehog-Genesis',
-    states=[
-        'GreenHillZone.Act1'
-    ],
-    obs_size=[224, 320],
-    actions=[
-        # [ B, A, MODE, START, UP, DOWN, LEFT, RIGHT, C, Y, X, Z ]
-        # RIGHT
-        [False, False, False, False, False, False,
-         False, True, False, False, False, False],
-        # LEFT
-        [False, False, False, False, False, False,
-         True, False, False, False, False, False],
-        # DOWN + LEFT
-        [False, False, False, False, False, True,
-         True, False, False, False, False, False],
-        # DOWN + RIGHT
-        [False, False, False, False, False, True,
-         False, True, False, False, False, False],
-        # DOWN
-        [False, False, False, False, False, True,
-         False, False, False, False, False, False],
-        # JUMP + DOWN
-        [True, False, False, False, False, True,
-         False, False, False, False, False, False],
-        # JUMP
-        [True, False, False, False, False, False,
-         False, False, False, False, False, False],
-        # NOTHING
-        [False, False, False, False, False, False,
-         False, False, False, False, False, False]
-    ],
-    loss_fn=sonic_loss
-)
-
-
 def pokemon_loss(info):
     step_penalty = info["step_count"]
     agent_total_hp = (info["poke1HP"] + info["poke2HP"] + info["poke3HP"] +
@@ -80,21 +38,8 @@ pokemon = Game(
     ],
     obs_size=[144, 160],
     actions=[
-        # [ B, A, START, SELECT, UP, DOWN, LEFT, RIGHT ]
-        # B
-        [True, False, False, False, False, False, False, False],
-        # A
-        [False, True, False, False, False, False, False, False],
-        # UP
-        [False, False, False, False, True, False, False, False],
-        # DOWN
-        [False, False, False, False, False, True, False, False],
-        # LEFT
-        [False, False, False, False, False, False, True, False],
-        # RIGHT
-        [False, False, False, False, False, False, False, True],
-        # NOTHING
-        [False, False, False, False, False, False, False, False]
+        # ["B", None, "SELECT", "START", "UP", "DOWN", "LEFT", "RIGHT", "A"]
+        [False, False, False, False, False, False, False, False, True]
     ],
     loss_fn=pokemon_loss
 )

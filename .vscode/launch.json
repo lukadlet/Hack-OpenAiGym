@@ -19,32 +19,6 @@
             "console": "integratedTerminal"
         },
         {
-            "name": "Train - Sonic",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/driver.py",
-            "args": [
-                "--game",
-                "sonic",
-                "--train_sequence",
-                "train_sequences/sonic_test.txt"
-            ],
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Evaluate Trained - Sonic",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/driver.py",
-            "args": [
-                "--game",
-                "sonic",
-                "--model",
-                "train_sequences/completed/sonic_test"
-            ],
-            "console": "integratedTerminal"
-        },
-        {
             "name": "Debug - Pokemon",
             "type": "python",
             "request": "launch",

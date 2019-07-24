@@ -43,8 +43,9 @@ class Agent:
                 tf.keras.layers.Dense(self.obs_size[0]/10, activation=tf.nn.relu),
                 tf.keras.layers.Dense(self.action_size)
             ])
-            prediction = model(screen_flattened)
-            print(prediction)
+            predictions = model(screen_flattened)
+            print("Prediction: {}".format(tf.argmax(predictions, axis=1)))
+
 
         with tf.name_scope("reinforcement_learning"):
             # Just a layer of neurons to predict output
@@ -78,10 +79,12 @@ class Agent:
         # saver is for saving / loading the model
         self.saver = tf.train.Saver()
 
-    def start(self):
+    def start(self, environment):
         self._clear_logs()
         self.writer = tf.summary.FileWriter(
             self.log_location, tf.get_default_graph())
+
+        
 
         self.session = tf.Session()
         self.session.run(tf.global_variables_initializer())
