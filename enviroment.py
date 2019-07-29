@@ -45,4 +45,4 @@ class Environment:
         self.gym.render()
 
     def __str__(self):
-        return str.format("[Game : {0}, State : {1}]", self.game, self.state)
+        return str.format("[Game : {0},\n State : {1},\n Info: {2}]", self.game, self.state, self.info)

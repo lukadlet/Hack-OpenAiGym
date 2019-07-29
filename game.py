@@ -25,10 +25,7 @@ class Game:
 
 
 def sonic_loss(info):
-    # print("Yuup, thats ", info, "alright")
-    if(info is None):
-        return 0.0
-    return info["screen_x_end"] - info["x"]
+    return info["screen_x_end"] - info["x"] - (info["novelty"] * 100)
 
 
 sonic = Game(
@@ -69,10 +66,13 @@ sonic = Game(
 
 
 def pokemon_loss(info):
-    if(info is None):
-        return 0.0
-    print("I choose you, ", info, "!")
-    return -1 * info["poke1HP"]
+    step_penalty = info["idle_count"]
+    agent_total_hp = (info["poke1HP"] + info["poke2HP"] + info["poke3HP"] +
+        info["poke4HP"] + info["poke5HP"] + info["poke6HP"]) * 10
+    enemy_total_hp = info["enemy1HP"] * 100
+    novelty = -info["novelty"] * 500
+
+    return (novelty) + step_penalty + enemy_total_hp - agent_total_hp
 
 
 pokemon = Game(
