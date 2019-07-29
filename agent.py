@@ -9,6 +9,7 @@ import shutil
 # Third Party Imports
 import tensorflow as tf
 import numpy as np
+import keras
 # Local Imports
 
 
@@ -130,7 +131,6 @@ class Agent:
         self.writer.add_summary(summary_str, self.step_count)
 
     def optimize(self):
-        self.optimizer.minimize(self.error)
         self.optimizer.minimize(self.loss_estimator)
 
     def _get_novelty(self, observation):
