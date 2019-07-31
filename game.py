@@ -66,13 +66,18 @@ sonic = Game(
 
 
 def pokemon_loss(info):
-    step_penalty = info["idle_count"]
-    agent_total_hp = (info["poke1HP"] + info["poke2HP"] + info["poke3HP"] +
-        info["poke4HP"] + info["poke5HP"] + info["poke6HP"]) * 10
-    enemy_total_hp = info["enemy1HP"] * 100
-    novelty = -info["novelty"] * 500
+    novelty = info["novelty"]
 
-    return (novelty) + step_penalty + enemy_total_hp - agent_total_hp
+    step_penalty = info["idle_count"]
+
+    turn_bonus = info["turnCount"]
+
+    agent_total_hp = (info["poke1HP"] + info["poke2HP"] + info["poke3HP"] +
+        info["poke4HP"] + info["poke5HP"] + info["poke6HP"])
+    
+    enemy_total_hp = info["enemyHP"]
+
+    return step_penalty + enemy_total_hp - agent_total_hp - turn_bonus - novelty
 
 
 pokemon = Game(

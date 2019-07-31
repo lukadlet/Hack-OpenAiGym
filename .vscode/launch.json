@@ -5,10 +5,27 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Test Trainer",
+            "name": "Debug - Pokemon",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}//driver.py",
+            "args": [
+                "--game",
+                "pokemon",
+                "--verbose"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Debug - Sonic",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/driver.py",
+            "args": [
+                "--game",
+                "sonic",
+                "--verbose"
+            ],
             "console": "integratedTerminal"
         },
         {
@@ -45,17 +62,6 @@
                 "train_sequences/completed/sonic_test",
                 "--idle_timer",
                 "300"
-            ],
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Debug - Pokemon",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}//driver.py",
-            "args": [
-                "--game",
-                "pokemon",
             ],
             "console": "integratedTerminal"
         },

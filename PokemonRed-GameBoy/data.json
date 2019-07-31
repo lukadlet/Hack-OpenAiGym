@@ -28,9 +28,13 @@
         "address": 53832,
         "type": ">u2"
       },
-      "enemy1HP": {
-        "address": 53222,
+      "enemyHP": {
+        "address": 53269,
         "type": ">u2"
+      },
+      "turnCount":{
+          "address": 52437,
+          "type": ">u2"
+        }
       }
-    }
   }
