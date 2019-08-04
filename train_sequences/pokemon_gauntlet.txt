@@ -1,7 +1,10 @@
 PokemonRed-Gameboy
-bulbasaur_vs_charmander
-bulbasaur_vs_charmander
-bulbasaur_vs_charmander
-bulbasaur_vs_charmander
-bulbasaur_vs_charmander
-bulbasaur_vs_charmander
+rival_1_bulbasaur
+rival_1_charmander
+rival_1_squirtle
+rival_1_charmander
+rival_1_bulbasaur
+rival_1_squirtle
+rival_1_bulbasaur
+rival_1_charmander
+rival_1_squirtle
